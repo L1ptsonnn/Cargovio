@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from .models import Company, Carrier
+from django.contrib.auth.hashers import make_password
 
 class UserTypeForm(forms.Form):
     USER_TYPE_CHOICES = [
@@ -14,23 +13,53 @@ class UserTypeForm(forms.Form):
         label='Register as'
     )
 
-class CompanyRegistrationForm(UserCreationForm):
-    company_name = forms.CharField(max_length=100)
-    description = forms.CharField(widget=forms.Textarea, required=False)
-    address = forms.CharField(widget=forms.Textarea)
-    phone_number = forms.CharField(max_length=15)
-
+class CompanyRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        model = Company
+        fields = ['company_name', 'description', 'address', 'phone_number']
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password1')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Passwords do not match')
+        return cleaned_data
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.password = make_password(self.cleaned_data['password1'])
+        if commit:
+            instance.save()
+        return instance
 
-class CarrierRegistrationForm(UserCreationForm):
+class CarrierRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    class Meta:
+        model = Carrier
+        fields = ['company_name', 'vehicle_type', 'vehicle_capacity', 'address', 'phone_number']
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password1')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Passwords do not match')
+        return cleaned_data
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.password = make_password(self.cleaned_data['password1'])
+        if commit:
+            instance.save()
+        return instance
+
+class CompanyLoginForm(forms.Form):
+    company_name = forms.CharField(max_length=100)
+    phone_number = forms.CharField(max_length=15)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+class CarrierLoginForm(forms.Form):
     company_name = forms.CharField(max_length=100)
     vehicle_type = forms.CharField(max_length=50)
-    vehicle_capacity = forms.DecimalField(max_digits=10, decimal_places=2)
     phone_number = forms.CharField(max_length=15)
-    address = forms.CharField(widget=forms.Textarea)
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2') 
+    password = forms.CharField(widget=forms.PasswordInput) 

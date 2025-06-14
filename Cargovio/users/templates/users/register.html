@@ -3,37 +3,57 @@
 {% block title %}Register - Cargovio{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Choose Account Type</h2>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-4">
-                        {{ form.user_type.label_tag }}
-                        <div class="mt-2">
-                            {% for radio in form.user_type %}
-                                <div class="form-check">
-                                    {{ radio.tag }}
-                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
-                                        {{ radio.choice_label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Continue</button>
-                    </div>
-                </form>
-                <div class="text-center mt-3">
-                    <p>Already have an account? <a href="{% url 'users:login' %}">Login here</a></p>
-                </div>
-            </div>
+<div class="container mt-5">
+    <h2>Register</h2>
+    <form id="registerForm" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" class="form-control" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="password1">Password:</label>
+            <input type="password" name="password1" id="password1" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="password2">Confirm Password:</label>
+            <input type="password" name="password2" id="password2" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="user_type">User Type:</label>
+            <select name="user_type" id="user_type" class="form-control" required>
+                <option value="company">Company</option>
+                <option value="carrier">Carrier</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
 </div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('{% url "users:register" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+</script>
 {% endblock %} 

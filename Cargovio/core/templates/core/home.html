@@ -1,45 +1,66 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
-{% block title %}Home - Cargovio{% endblock %}
+{% block title %}Cargovio — Логістика Європи{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'core/home.css' %}">
+    <style>
+        #amcharts-europe-map { width: 100vw; max-width: 1600px; height: 70vh; margin: 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    </style>
+{% endblock %}
 
 {% block content %}
-<div class="text-center">
-    <h1 class="display-4">Welcome to Cargovio</h1>
-    <p class="lead">Your trusted platform for agricultural logistics</p>
-    
-    {% if user.is_authenticated %}
-        <div class="mt-4">
-            <h2>What would you like to do?</h2>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Create Shipment</h5>
-                            <p class="card-text">Need to transport your goods? Create a new shipment request.</p>
-                            <a href="#" class="btn btn-primary">Create Shipment</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">View Shipments</h5>
-                            <p class="card-text">Check your active and past shipments.</p>
-                            <a href="#" class="btn btn-primary">View Shipments</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <div class="mt-4">
-            <h2>Get Started</h2>
-            <p>Join our platform to start shipping or transporting goods.</p>
-            <div class="mt-3">
-                <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg me-3">Register</a>
-                <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-lg">Login</a>
-            </div>
-        </div>
-    {% endif %}
+<!-- SVG-хвиля у верхній частині -->
+<div style="position:absolute;top:0;left:0;width:100vw;z-index:0;pointer-events:none;">
+    <svg width="100%" height="120" viewBox="0 0 1920 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 80 Q 480 0 960 80 T 1920 80 V120 H0Z" fill="#e3eafc" fill-opacity="0.5"/>
+    </svg>
 </div>
+<div class="europe-map-decor-wrap position-relative" style="z-index:1;">
+    <!-- Декоративна логістична лінія з точками -->
+    <svg width="80" height="600" viewBox="0 0 80 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-60px;top:60px;">
+        <polyline points="40,0 40,100 20,200 60,300 40,400 40,600" stroke="#b0b8c9" stroke-width="4" fill="none" stroke-dasharray="12 12"/>
+        <circle cx="40" cy="0" r="8" fill="#b0b8c9"/>
+        <circle cx="40" cy="100" r="6" fill="#b0b8c9"/>
+        <circle cx="20" cy="200" r="6" fill="#b0b8c9"/>
+        <circle cx="60" cy="300" r="6" fill="#b0b8c9"/>
+        <circle cx="40" cy="400" r="6" fill="#b0b8c9"/>
+        <circle cx="40" cy="600" r="8" fill="#b0b8c9"/>
+    </svg>
+    <div class="europe-map-container shadow-lg position-relative" style="position:relative;box-shadow:0 8px 40px 0 #b0b8c933, 0 1.5px 0 #fff;border:2.5px solid #222;overflow:hidden;">
+        <!-- Мініатюрна іконка-вантажівка в лівому нижньому кутку -->
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:10px;bottom:10px;opacity:0.18;z-index:2;">
+            <rect x="4" y="14" width="22" height="10" rx="2" fill="#222"/>
+            <rect x="26" y="17" width="7" height="7" rx="1.5" fill="#222"/>
+            <circle cx="10" cy="27" r="3" fill="#222"/>
+            <circle cx="26" cy="27" r="3" fill="#222"/>
+            <rect x="7" y="17" width="6" height="4" rx="1" fill="#fff"/>
+        </svg>
+        <div id="amcharts-europe-map"></div>
+        <!-- Темна хвиля під картою -->
+        <svg width="100%" height="60" viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:0;bottom:0;z-index:1;">
+            <path d="M0 20 Q 300 60 600 20 T 1200 20 V60 H0Z" fill="#222" fill-opacity="0.12"/>
+        </svg>
+    </div>
+</div>
+<!-- Декоративна чорна смуга внизу сторінки -->
+<div style="width:100vw;height:38px;background:#222;position:fixed;left:0;bottom:0;z-index:100;"></div>
+<!-- Ліва хвиля-декор -->
+<svg width="120" height="900" viewBox="0 0 120 900" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:fixed;left:0;top:120px;z-index:0;pointer-events:none;">
+    <path d="M60 0 Q 10 200 60 400 Q 110 600 60 800 Q 10 900 60 900" stroke="#222" stroke-width="32" fill="none" opacity="0.08"/>
+</svg>
+<!-- Права хвиля-декор -->
+<svg width="120" height="900" viewBox="0 0 120 900" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:fixed;right:0;top:120px;z-index:0;pointer-events:none;">
+    <path d="M60 0 Q 110 200 60 400 Q 10 600 60 800 Q 110 900 60 900" stroke="#222" stroke-width="32" fill="none" opacity="0.08"/>
+</svg>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/region/world/europeLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="{% static 'core/home.js' %}"></script>
 {% endblock %} 

@@ -1,0 +1,81 @@
+body {
+    background: #f7f9fb;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+.main-nav .logo {
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #1a2236;
+    margin-right: 40px;
+}
+.main-nav .menu {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+}
+.main-nav .menu li a {
+    color: #1a2236;
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+.main-nav .menu li a:hover {
+    background: #e3eafc;
+    color: #1976d2;
+}
+.europe-map-container {
+    width: 100vw;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f7f9fb;
+    padding: 0;
+}
+#europe-leaflet-map {
+    width: 98vw;
+    height: 60vh;
+    min-height: 400px;
+    max-width: 1600px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    margin: 0 auto;
+}
+.leaflet-container {
+    background: #fff !important;
+}
+.country-tooltip {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #222;
+    background: #fff;
+    border: 1px solid #1976d2;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+    padding: 4px 12px;
+}
+.country-highlight {
+    filter: drop-shadow(0 0 8px #1976d2aa);
+}
+@media (max-width: 900px) {
+    #europe-map { width: 98vw; height: 60vw; min-height: 300px; }
+    .main-nav { flex-direction: column; gap: 10px; padding: 18px 10px; }
+    .main-nav .menu { gap: 18px; }
+    .main-nav .logo { margin-right: 0; margin-bottom: 10px; }
+} 

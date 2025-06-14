@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">Email: {{ user.email }}</p>
+            {% if user.company %}
+                <p class="card-text">Company: {{ user.company.company_name }}</p>
+                <p class="card-text">Description: {{ user.company.description }}</p>
+            {% endif %}
+            {% if user.carrier %}
+                <p class="card-text">Vehicle Type: {{ user.carrier.vehicle_type }}</p>
+                <p class="card-text">Vehicle Capacity: {{ user.carrier.vehicle_capacity }}</p>
+            {% endif %}
+            <p class="card-text">Phone: {{ user.phone_number }}</p>
+            <p class="card-text">Address: {{ user.address }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
