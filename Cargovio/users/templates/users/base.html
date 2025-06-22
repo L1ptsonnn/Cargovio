@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% block users_content %}{% endblock %}
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Choose user type -->
+                <div id="loginTypeChoice">
+                    <button class="btn btn-outline-dark w-100 mb-2" onclick="showLoginForm('company')">Компанія</button>
+                    <button class="btn btn-outline-dark w-100" onclick="showLoginForm('carrier')">Перевізник</button>
+                </div>
+                <!-- Step 2: Login forms -->
+                <form id="loginFormCompany" style="display:none;">
+                    {% csrf_token %}
+                    <h5 class="mb-3">Вхід для компанії</h5>
+                    <div class="form-group mb-2">
+                        <label for="login_company_username">Username:</label>
+                        <input type="text" name="username" id="login_company_username" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="login_company_password">Password:</label>
+                        <input type="password" name="password" id="login_company_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+                <form id="loginFormCarrier" style="display:none;">
+                    {% csrf_token %}
+                    <h5 class="mb-3">Вхід для перевізника</h5>
+                    <div class="form-group mb-2">
+                        <label for="login_carrier_username">Username:</label>
+                        <input type="text" name="username" id="login_carrier_username" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="login_carrier_password">Password:</label>
+                        <input type="password" name="password" id="login_carrier_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Choose user type -->
+                <div id="registerTypeChoice">
+                    <button class="btn btn-outline-dark w-100 mb-2" onclick="showRegisterForm('company')">Компанія</button>
+                    <button class="btn btn-outline-dark w-100" onclick="showRegisterForm('carrier')">Перевізник</button>
+                </div>
+                <!-- Step 2: Register forms -->
+                <form id="registerFormCompany" style="display:none;">
+                    {% csrf_token %}
+                    <h5 class="mb-3">Реєстрація компанії</h5>
+                    <div class="form-group mb-2">
+                        <label for="register_company_username">Username:</label>
+                        <input type="text" name="username" id="register_company_username" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_company_email">Email:</label>
+                        <input type="email" name="email" id="register_company_email" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_company_password1">Password:</label>
+                        <input type="password" name="password1" id="register_company_password1" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_company_password2">Confirm Password:</label>
+                        <input type="password" name="password2" id="register_company_password2" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+                <form id="registerFormCarrier" style="display:none;">
+                    {% csrf_token %}
+                    <h5 class="mb-3">Реєстрація перевізника</h5>
+                    <div class="form-group mb-2">
+                        <label for="register_carrier_username">Username:</label>
+                        <input type="text" name="username" id="register_carrier_username" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_carrier_email">Email:</label>
+                        <input type="email" name="email" id="register_carrier_email" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_carrier_password1">Password:</label>
+                        <input type="password" name="password1" id="register_carrier_password1" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="register_carrier_password2">Confirm Password:</label>
+                        <input type="password" name="password2" id="register_carrier_password2" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- LOGIN MODAL LOGIC ---
+    function showLoginForm(type) {
+        document.getElementById('loginTypeChoice').style.display = 'none';
+        if (type === 'company') {
+            document.getElementById('loginFormCompany').style.display = 'block';
+        } else {
+            document.getElementById('loginFormCarrier').style.display = 'block';
+        }
+    }
+    // --- REGISTER MODAL LOGIC ---
+    function showRegisterForm(type) {
+        document.getElementById('registerTypeChoice').style.display = 'none';
+        if (type === 'company') {
+            document.getElementById('registerFormCompany').style.display = 'block';
+        } else {
+            document.getElementById('registerFormCarrier').style.display = 'block';
+        }
+    }
+    // Reset modal on close
+    document.getElementById('loginModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('loginTypeChoice').style.display = 'block';
+        document.getElementById('loginFormCompany').style.display = 'none';
+        document.getElementById('loginFormCarrier').style.display = 'none';
+    });
+    document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('registerTypeChoice').style.display = 'block';
+        document.getElementById('registerFormCompany').style.display = 'none';
+        document.getElementById('registerFormCarrier').style.display = 'none';
+    });
+    // --- AJAX SUBMIT ---
+    document.getElementById('loginFormCompany').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('user_type', 'company');
+        fetch('{% url "users:login" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+    document.getElementById('loginFormCarrier').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('user_type', 'carrier');
+        fetch('{% url "users:login" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+    document.getElementById('registerFormCompany').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('user_type', 'company');
+        fetch('{% url "users:register" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+    document.getElementById('registerFormCarrier').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('user_type', 'carrier');
+        fetch('{% url "users:register" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+</script>
+{% endblock %} 

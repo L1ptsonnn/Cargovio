@@ -3,82 +3,53 @@ from .models import Company, Carrier
 from django.contrib.auth.hashers import make_password
 from phonenumber_field.formfields import PhoneNumberField
 
-class CompanyRegistrationForm(forms.ModelForm):
-    company_name = forms.CharField(
-        label="Назва компанії",
-        widget=forms.TextInput(attrs={'placeholder': 'ТОВ "Роги та копита"'})
-    )
-    email = forms.EmailField(
-        label="Email",
-        widget=forms.EmailInput(attrs={'placeholder': 'contact@company.com'})
-    )
-    phone_number = forms.CharField(
-        label="Номер телефону",
-        widget=forms.TextInput(attrs={'placeholder': '+380...'})
-    )
-    password = forms.CharField(
-        label="Пароль",
-        widget=forms.PasswordInput(attrs={'placeholder': 'Введіть надійний пароль'})
-    )
-    password_confirm = forms.CharField(
-        label="Підтвердження пароля",
-        widget=forms.PasswordInput(attrs={'placeholder': 'Повторіть пароль'})
+class UserTypeForm(forms.Form):
+    USER_TYPE_CHOICES = [
+        ('company', 'Company'),
+        ('carrier', 'Carrier'),
+    ]
+    user_type = forms.ChoiceField(
+        choices=USER_TYPE_CHOICES,
+        widget=forms.RadioSelect,
+        label='Register as'
     )
 
+class CompanyRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
         model = Company
-        fields = ['company_name', 'email', 'phone_number', 'password', 'password_confirm']
-
-    def clean_password_confirm(self):
-        password = self.cleaned_data.get('password')
-        password_confirm = self.cleaned_data.get('password_confirm')
-        if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError("Паролі не співпадають.")
-        return password_confirm
-
+        fields = ['company_name', 'phone_number', 'email']
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password1')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Passwords do not match')
+        return cleaned_data
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.password = make_password(self.cleaned_data['password'])
+        instance.password = make_password(self.cleaned_data['password1'])
         if commit:
             instance.save()
         return instance
 
 class CarrierRegistrationForm(forms.ModelForm):
-    full_name = forms.CharField(
-        label="Повне ім'я",
-        widget=forms.TextInput(attrs={'placeholder': 'Іван Петренко'})
-    )
-    email = forms.EmailField(
-        label="Email",
-        widget=forms.EmailInput(attrs={'placeholder': 'ivan.petrenko@email.com'})
-    )
-    phone_number = forms.CharField(
-        label="Номер телефону",
-        widget=forms.TextInput(attrs={'placeholder': '+380...'})
-    )
-    password = forms.CharField(
-        label="Пароль",
-        widget=forms.PasswordInput(attrs={'placeholder': 'Введіть надійний пароль'})
-    )
-    password_confirm = forms.CharField(
-        label="Підтвердження пароля",
-        widget=forms.PasswordInput(attrs={'placeholder': 'Повторіть пароль'})
-    )
-
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
         model = Carrier
-        fields = ['full_name', 'email', 'phone_number', 'password', 'password_confirm']
-
-    def clean_password_confirm(self):
-        password = self.cleaned_data.get('password')
-        password_confirm = self.cleaned_data.get('password_confirm')
-        if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError("Паролі не співпадають.")
-        return password_confirm
-
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'vehicle_model']
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password1')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Passwords do not match')
+        return cleaned_data
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.password = make_password(self.cleaned_data['password'])
+        instance.password = make_password(self.cleaned_data['password1'])
         if commit:
             instance.save()
         return instance

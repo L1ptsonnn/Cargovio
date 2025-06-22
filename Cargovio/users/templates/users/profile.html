@@ -1,52 +1,22 @@
-{% extends 'core/base.html' %}
-
-{% block title %}Мій профіль - Cargovio{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">
-                        {% if user_type == 'company' %}
-                            Профіль компанії
-                        {% else %}
-                            Профіль перевізника
-                        {% endif %}
-                    </h4>
-                    <a href="#" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-pencil-square me-1"></i> Редагувати профіль
-                    </a>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        {% if user_type == 'company' %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Назва компанії</span>
-                                <strong class="text-end">{{ user.company_name }}</strong>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Повне ім'я</span>
-                                <strong class="text-end">{{ user.full_name }}</strong>
-                            </li>
-                        {% endif %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Email</span>
-                            <strong class="text-end">{{ user.email }}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Номер телефону</span>
-                            <strong class="text-end">{{ user.phone_number }}</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Дата реєстрації</span>
-                            <strong class="text-end">{{ user.date_joined|date:"d M Y" }}</strong>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <h2>Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">Email: {{ user.email }}</p>
+            {% if user.company %}
+                <p class="card-text">Company: {{ user.company.company_name }}</p>
+                <p class="card-text">Description: {{ user.company.description }}</p>
+            {% endif %}
+            {% if user.carrier %}
+                <p class="card-text">Vehicle Type: {{ user.carrier.vehicle_type }}</p>
+                <p class="card-text">Vehicle Capacity: {{ user.carrier.vehicle_capacity }}</p>
+            {% endif %}
+            <p class="card-text">Phone: {{ user.phone_number }}</p>
+            <p class="card-text">Address: {{ user.address }}</p>
         </div>
     </div>
 </div>
