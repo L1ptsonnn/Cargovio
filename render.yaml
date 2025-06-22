@@ -2,6 +2,7 @@ services:
   - type: web
     name: cargovio
     env: python
+    pythonVersion: 3.12.3
     plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn Cargovio.wsgi:application"
