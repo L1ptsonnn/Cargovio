@@ -75,26 +75,48 @@
             padding: 0 2px 2px 2px;
         }
     }
-    /* --- MOBILE NAVBAR IMPROVEMENTS --- */
+    /* --- FINAL MOBILE NAVBAR FIX --- */
     @media (max-width: 991.98px) {
+        .navbar-brand {
+            flex-grow: 1; /* Дозволяє логотипу зайняти доступний простір */
+        }
         .navbar-collapse {
-            background: #222 !important;
-            color: #fff;
-            border-radius: 0 0 18px 18px;
-            box-shadow: 0 8px 32px 0 #22222233;
-            padding: 1.2rem 1rem 1.5rem 1rem;
-            margin-top: 8px;
+            position: absolute;
+            top: 100px; /* Позиціонуємо меню трохи нижче хедера */
+            left: 0;
+            right: 0;
+            background-color: #343a40 !important; /* Надійний темний фон */
+            padding: 1rem;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1021; /* Вище за інші елементи */
         }
-        .navbar-nav .nav-link, .navbar-nav .btn {
-            color: #fff !important;
-            font-size: 1.2rem;
-            margin-bottom: 0.7rem;
-        }
-        .navbar-nav .btn-primary, .navbar-nav .btn-outline-light {
+        .navbar-nav {
             width: 100%;
+            text-align: center;
+        }
+        .navbar-nav .nav-item {
+            width: 100%;
+            margin-bottom: 0.5rem; /* Відступ між елементами */
+        }
+        .navbar-nav .nav-link, 
+        .navbar-nav .btn {
+            color: white !important; /* Білий, контрастний текст */
             font-size: 1.2rem;
-            padding: 0.7rem 0;
-            margin-bottom: 0.7rem;
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+        .navbar-nav .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+        .navbar-nav .btn-outline-light {
+            border: 1px solid white;
+        }
+        .navbar-toggler {
+            margin-right: 1rem; /* Відступ для бургер-кнопки */
         }
     }
     /* --- ALWAYS VISIBLE AUTH BUTTONS --- */
@@ -134,15 +156,15 @@
     <div style="width:100vw;height:38px;background:#222;position:fixed;left:0;bottom:0;z-index:100;"></div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" style="min-height:110px;">
         <div class="d-flex align-items-center w-100" style="min-height: 110px;">
-            <a class="navbar-brand d-flex align-items-center justify-content-center ms-4" href="{% url 'core:home' %}" style="width: 180px; min-width: 180px;">
+            <a class="navbar-brand d-flex align-items-center ms-4" href="{% url 'core:home' %}">
                 <img src="{% static 'core/logo.png' %}" alt="Cargovio Logo" style="width: 180px; height: 90px; object-fit:contain;">
             </a>
-            <div class="flex-grow-1">
+            <div class="flex-grow-1 d-lg-block">
                 <div class="container">
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarNav" style="height:90px;">
+                    <div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarNav" style="height:auto;">
                         <ul class="navbar-nav ms-auto align-items-center gap-2 h-100">
                             <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Головна</a></li>
                             <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Послуги</a></li>
