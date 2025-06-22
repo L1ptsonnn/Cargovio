@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserTypeForm, CompanyRegistrationForm, CarrierRegistrationForm, CompanyLoginForm, CarrierLoginForm
 from .models import Company, Carrier
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth import login as auth_login
 
 def register(request):
     if request.method == 'POST':
@@ -62,8 +60,10 @@ def register_details(request):
 def is_authenticated(request):
     return bool(request.session.get('company_id') or request.session.get('carrier_id'))
 
-@login_required(login_url='/users/login/')
 def profile(request):
+    if not is_authenticated(request):
+        return redirect('users:login')
+        
     company_id = request.session.get('company_id')
     carrier_id = request.session.get('carrier_id')
     company = carrier = None
