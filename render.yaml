@@ -2,6 +2,7 @@ services:
   - type: web
     name: cargovio
     env: python
+    plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn Cargovio.wsgi:application"
     envVars:
@@ -16,4 +17,5 @@ services:
 
 databases:
   - name: cargoviodb
+    plan: free
     ipAllowList: [] 
