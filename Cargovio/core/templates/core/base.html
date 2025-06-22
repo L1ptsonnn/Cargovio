@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Cargovio{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
     {% block extra_head %}{% endblock %}
     <style>
     .cargovio-logo-navbar {
@@ -67,25 +67,50 @@
     .cargovio-modal .btn-primary:hover {
         background: #2563eb;
     }
-    .navbar-toggler {
-        border: none;
-    }
-    .navbar-toggler:focus {
-        box-shadow: none;
-    }
-    @media (max-width: 991.98px) {
-        .navbar-nav {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            align-items: flex-start !important;
-        }
-    }
     @media (max-width: 600px) {
         .modal-dialog {
             margin: 0.5rem;
         }
         .modal-content.cargovio-modal {
             padding: 0 2px 2px 2px;
+        }
+    }
+    /* --- MOBILE NAVBAR IMPROVEMENTS --- */
+    @media (max-width: 991.98px) {
+        .navbar-collapse {
+            background: #222 !important;
+            color: #fff;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 8px 32px 0 #22222233;
+            padding: 1.2rem 1rem 1.5rem 1rem;
+            margin-top: 8px;
+        }
+        .navbar-nav .nav-link, .navbar-nav .btn {
+            color: #fff !important;
+            font-size: 1.2rem;
+            margin-bottom: 0.7rem;
+        }
+        .navbar-nav .btn-primary, .navbar-nav .btn-outline-light {
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 0.7rem 0;
+            margin-bottom: 0.7rem;
+        }
+    }
+    /* --- ALWAYS VISIBLE AUTH BUTTONS --- */
+    @media (max-width: 991.98px) {
+        .navbar-nav {
+            align-items: stretch !important;
+        }
+        .navbar-nav .nav-item {
+            width: 100%;
+        }
+    }
+    /* --- MAKE BUTTONS BIGGER ON MOBILE --- */
+    @media (max-width: 600px) {
+        .navbar-nav .btn, .navbar-nav .btn-primary, .navbar-nav .btn-outline-light {
+            font-size: 1.25rem;
+            padding: 1rem 0;
         }
     }
     </style>
@@ -107,63 +132,62 @@
     </svg>
     <!-- Декоративна чорна смуга внизу сторінки -->
     <div style="width:100vw;height:38px;background:#222;position:fixed;left:0;bottom:0;z-index:100;"></div>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-0" style="min-height:90px;">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" style="min-height:110px;">
+        <div class="d-flex align-items-center w-100" style="min-height: 110px;">
+            <a class="navbar-brand d-flex align-items-center justify-content-center ms-4" href="{% url 'core:home' %}" style="width: 180px; min-width: 180px;">
                 <img src="{% static 'core/logo.png' %}" alt="Cargovio Logo" style="width: 180px; height: 90px; object-fit:contain;">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Головна</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Послуги</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Про нас</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Контакти</a></li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i>
-                                {% if request.session.company_name %}
-                                    {{ request.session.company_name }}
-                                {% elif request.session.carrier_name %}
-                                    {{ request.session.carrier_name }}
-                                {% else %}
-                                    Профіль
-                                {% endif %}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">Мій профіль</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
+            <div class="flex-grow-1">
+                <div class="container">
+                    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarNav" style="height:90px;">
+                        <ul class="navbar-nav ms-auto align-items-center gap-2 h-100">
+                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Головна</a></li>
+                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Послуги</a></li>
+                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Про нас</a></li>
+                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Контакти</a></li>
+                            {% if request.session.company_id %}
+                                <li class="nav-item d-flex align-items-center h-100">
+                                    <span class="nav-link">Компанія: {{ request.session.company_name }}</span>
+                                </li>
+                                <li class="nav-item d-flex align-items-center h-100">
                                     <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">Вихід</button>
+                                        <button type="submit" class="btn btn-outline-light btn-sm">Вихід</button>
                                     </form>
                                 </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Вхід</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-primary btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Реєстрація</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                            {% elif request.session.carrier_id %}
+                                <li class="nav-item d-flex align-items-center h-100">
+                                    <span class="nav-link">Перевізник: {{ request.session.carrier_name }}</span>
+                                </li>
+                                <li class="nav-item d-flex align-items-center h-100">
+                                    <form method="post" action="{% url 'users:logout' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-light btn-sm">Вихід</button>
+                                    </form>
+                                </li>
+                            {% else %}
+                                <li class="nav-item d-flex align-items-center h-100">
+                                    <a class="btn btn-outline-light btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Вхід</a>
+                                </li>
+                                <li class="nav-item d-flex align-items-center h-100">
+                                    <a class="btn btn-primary btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Реєстрація</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container my-4">
+    <div class="container mt-4">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ message.tags }}">
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
@@ -172,62 +196,69 @@
         {% endblock %}
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+    {% block extra_js %}{% endblock %}
+
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content cargovio-modal">
-                 <div class="modal-header border-0">
-                    <h5 class="modal-title cargovio-modal-title" id="loginModalLabel">Вхід</h5>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="loginTypeChoice">
-                        <p class="text-center">Увійти як:</p>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-dark" onclick="showLoginForm('company')">Компанія</button>
-                            <button class="btn btn-outline-dark" onclick="showLoginForm('carrier')">Перевізник</button>
-                        </div>
+                        <button class="btn btn-outline-dark w-100 mb-2" onclick="showLoginForm('company')">Компанія</button>
+                        <button class="btn btn-outline-dark w-100" onclick="showLoginForm('carrier')">Перевізник</button>
                     </div>
-                    <form id="loginFormCompany" method="POST" action="{% url 'users:login' %}" style="display:none;" autocomplete="on">
+                    <form id="loginFormCompany" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <input type="hidden" name="user_type" value="company">
-                        <div class="form-group mb-3">
-                            <label for="login_company_name" class="cargovio-modal-label">Назва компанії</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-building"></i></span>
-                                <input type="text" name="username" id="login_company_name" class="form-control border-start-0" required autocomplete="organization" placeholder="ТОВ Приклад">
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Вхід для компанії</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="login_company_password" class="cargovio-modal-label">Пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
-                                <input type="password" name="password" id="login_company_password" class="form-control border-start-0" required autocomplete="current-password">
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="login_company_name" class="cargovio-modal-label">Назва компанії</label>
+                                    <span class="input-icon"><i class="bi bi-building"></i></span>
+                                    <input type="text" name="company_name" id="login_company_name" class="form-control" required autocomplete="organization" placeholder="ТОВ Приклад">
+                                    <small class="form-text text-muted">Введіть назву компанії для входу</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="login_company_password" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="login_company_password" class="form-control" required autocomplete="current-password">
+                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
                             </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Увійти</button>
                         </div>
                     </form>
-                    <form id="loginFormCarrier" method="POST" action="{% url 'users:login' %}" style="display:none;" autocomplete="on">
+                    <form id="loginFormCarrier" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <input type="hidden" name="user_type" value="carrier">
-                        <div class="form-group mb-3">
-                            <label for="login_carrier_email" class="cargovio-modal-label">Email</label>
-                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="username" id="login_carrier_email" class="form-control border-start-0" required autocomplete="email" placeholder="name@example.com">
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Вхід для перевізника</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="login_carrier_password" class="cargovio-modal-label">Пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
-                                <input type="password" name="password" id="login_carrier_password" class="form-control border-start-0" required autocomplete="current-password">
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="login_carrier_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="login_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
+                                    <small class="form-text text-muted">Введіть email перевізника</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="login_carrier_password" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="login_carrier_password" class="form-control" required autocomplete="current-password">
+                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
                             </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Увійти</button>
                         </div>
                     </form>
                 </div>
@@ -237,141 +268,247 @@
 
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content cargovio-modal">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title cargovio-modal-title" id="registerModalLabel">Реєстрація</h5>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="registerTypeChoice">
-                        <p class="text-center">Зареєструватися як:</p>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-dark" onclick="showRegisterForm('company')">Компанія</button>
-                            <button class="btn btn-outline-dark" onclick="showRegisterForm('carrier')">Перевізник</button>
-                        </div>
+                        <button class="btn btn-outline-dark w-100 mb-2" onclick="showRegisterForm('company')">Компанія</button>
+                        <button class="btn btn-outline-dark w-100" onclick="showRegisterForm('carrier')">Перевізник</button>
                     </div>
-                    
-                    <form id="registerFormCompany" method="POST" action="{% url 'users:register' %}" style="display:none;" autocomplete="on">
+                    <form id="registerFormCompany" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <input type="hidden" name="user_type" value="company">
-                         <div class="form-group mb-3">
-                            <label for="reg_company_name" class="cargovio-modal-label">Назва компанії</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-building"></i></span>
-                                <input type="text" name="company_name" id="reg_company_name" class="form-control border-start-0" required autocomplete="organization">
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Реєстрація компанії</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        </div>
-                         <div class="form-group mb-3">
-                            <label for="reg_company_email" class="cargovio-modal-label">Email компанії</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="email" id="reg_company_email" class="form-control border-start-0" required autocomplete="email">
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="register_company_name" class="cargovio-modal-label">Назва компанії</label>
+                                    <span class="input-icon"><i class="bi bi-building"></i></span>
+                                    <input type="text" name="company_name" id="register_company_name" class="form-control" required autocomplete="organization">
+                                    <small class="form-text text-muted">Введіть офіційну назву компанії</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="register_company_email" class="form-control" required autocomplete="email" placeholder="company@example.com">
+                                    <small class="form-text text-muted">Введіть дійсну електронну адресу компанії</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_phone" class="cargovio-modal-label">Номер телефону</label>
+                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" name="phone_number" id="register_company_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
+                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_password1" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password1" id="register_company_password1" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password2" id="register_company_password2" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="reg_company_password" class="cargovio-modal-label">Пароль</d>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
-                                <input type="password" name="password" id="reg_company_password" class="form-control border-start-0" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Зареєструватися</button>
                         </div>
                     </form>
-
-                    <form id="registerFormCarrier" method="POST" action="{% url 'users:register' %}" style="display:none;" autocomplete="on">
+                    <form id="registerFormCarrier" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <input type="hidden" name="user_type" value="carrier">
-                        <div class="form-group mb-3">
-                            <label for="reg_carrier_name" class="cargovio-modal-label">Ім'я та Прізвище</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
-                                <input type="text" name="full_name" id="reg_carrier_name" class="form-control border-start-0" required autocomplete="name">
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Реєстрація перевізника</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="reg_carrier_email" class="cargovio-modal-label">Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="email" id="reg_carrier_email" class="form-control border-start-0" required autocomplete="email">
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_first_name" class="cargovio-modal-label">Ім'я</label>
+                                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="first_name" id="register_carrier_first_name" class="form-control" required autocomplete="given-name">
+                                    <small class="form-text text-muted">Введіть ваше ім'я українською або латиницею</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_last_name" class="cargovio-modal-label">Прізвище</label>
+                                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="last_name" id="register_carrier_last_name" class="form-control" required autocomplete="family-name">
+                                    <small class="form-text text-muted">Введіть ваше прізвище українською або латиницею</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="register_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
+                                    <small class="form-text text-muted">Введіть дійсну електронну адресу</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_phone" class="cargovio-modal-label">Номер телефону</label>
+                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" name="phone_number" id="register_carrier_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
+                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_vehicle_model" class="cargovio-modal-label">Марка вантажівки</label>
+                                    <span class="input-icon"><i class="bi bi-truck"></i></span>
+                                    <input type="text" name="vehicle_model" id="register_carrier_vehicle_model" class="form-control" required>
+                                    <small class="form-text text-muted">Наприклад: MAN, Volvo, Mercedes-Benz</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_password1" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password1" id="register_carrier_password1" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password2" id="register_carrier_password2" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="reg_carrier_phone" class="cargovio-modal-label">Номер телефону</label>
-                            <input type="tel" name="phone_number" id="reg_carrier_phone" class="form-control" required autocomplete="tel">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="reg_carrier_password" class="cargovio-modal-label">Пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
-                                <input type="password" name="password" id="reg_carrier_password" class="form-control border-start-0" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Зареєструватися</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+
     <script>
         function showLoginForm(type) {
             document.getElementById('loginTypeChoice').style.display = 'none';
             if (type === 'company') {
                 document.getElementById('loginFormCompany').style.display = 'block';
-                document.getElementById('loginFormCarrier').style.display = 'none';
             } else {
-                document.getElementById('loginFormCompany').style.display = 'none';
                 document.getElementById('loginFormCarrier').style.display = 'block';
             }
         }
-
         function showRegisterForm(type) {
             document.getElementById('registerTypeChoice').style.display = 'none';
             if (type === 'company') {
                 document.getElementById('registerFormCompany').style.display = 'block';
-                document.getElementById('registerFormCarrier').style.display = 'none';
             } else {
-                document.getElementById('registerFormCompany').style.display = 'none';
                 document.getElementById('registerFormCarrier').style.display = 'block';
             }
         }
-        
-        // Скидання модальних вікон при закритті
         document.getElementById('loginModal').addEventListener('hidden.bs.modal', function () {
             document.getElementById('loginTypeChoice').style.display = 'block';
             document.getElementById('loginFormCompany').style.display = 'none';
             document.getElementById('loginFormCarrier').style.display = 'none';
         });
-
         document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
             document.getElementById('registerTypeChoice').style.display = 'block';
             document.getElementById('registerFormCompany').style.display = 'none';
             document.getElementById('registerFormCarrier').style.display = 'none';
         });
-
+        document.getElementById('loginFormCompany').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('user_type', 'company');
+            fetch('{% url "users:login" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+        document.getElementById('loginFormCarrier').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('user_type', 'carrier');
+            fetch('{% url "users:login" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+        document.getElementById('registerFormCompany').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('user_type', 'company');
+            fetch('{% url "users:register" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+        document.getElementById('registerFormCarrier').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('user_type', 'carrier');
+            fetch('{% url "users:register" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
         document.addEventListener('DOMContentLoaded', function() {
-            var phoneInputCarrier = document.getElementById('reg_carrier_phone');
+            var phoneInputCarrier = document.getElementById('register_carrier_phone');
             if (phoneInputCarrier) {
                 window.itiCarrier = window.intlTelInput(phoneInputCarrier, {
-                    initialCountry: "auto",
-                    geoIpLookup: function(callback) {
-                        fetch('https://ipinfo.io?token=YOUR_TOKEN_HERE')
-                            .then(response => response.json())
-                            .then(data => callback(data.country))
-                            .catch(() => callback('us'));
-                    },
-                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js",
+                    initialCountry: 'ua',
+                    preferredCountries: ['ua', 'pl', 'de', 'cz', 'ro', 'hu', 'sk', 'lt', 'lv', 'ee'],
+                    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js',
+                    nationalMode: false,
+                    separateDialCode: true
+                });
+            }
+            var phoneInputCompany = document.getElementById('register_company_phone');
+            if (phoneInputCompany) {
+                window.itiCompany = window.intlTelInput(phoneInputCompany, {
+                    initialCountry: 'ua',
+                    preferredCountries: ['ua', 'pl', 'de', 'cz', 'ro', 'hu', 'sk', 'lt', 'lv', 'ee'],
+                    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js',
+                    nationalMode: false,
+                    separateDialCode: true
                 });
             }
         });
     </script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html> 
