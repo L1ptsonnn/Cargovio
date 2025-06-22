@@ -24,15 +24,19 @@ def register(request):
             if form.is_valid():
                 carrier = form.save()
                 request.session['carrier_id'] = carrier.id
-                request.session['carrier_name'] = carrier.company_name
+                request.session['carrier_name'] = carrier.get_full_name()
                 return JsonResponse({'success': True, 'redirect': '/'})
             else:
                 return JsonResponse({'success': False, 'error': form.errors.as_json()})
         else:
             return JsonResponse({'success': False, 'error': 'User type required'})
     else:
-        form = UserTypeForm()
-        return render(request, 'users/register.html', {'form': form})
+        company_form = CompanyRegistrationForm()
+        carrier_form = CarrierRegistrationForm()
+        return render(request, 'users/register.html', {
+            'company_form': company_form,
+            'carrier_form': carrier_form
+        })
 
 def register_details(request):
     user_type = request.session.get('user_type')
@@ -82,7 +86,7 @@ def login_view(request):
             form = CompanyLoginForm(request.POST)
             if form.is_valid():
                 try:
-                    company = Company.objects.get(company_name=form.cleaned_data['company_name'], phone_number=form.cleaned_data['phone_number'])
+                    company = Company.objects.get(company_name=form.cleaned_data['company_name'])
                     if check_password(form.cleaned_data['password'], company.password):
                         request.session['company_id'] = company.id
                         request.session['company_name'] = company.company_name
@@ -97,10 +101,10 @@ def login_view(request):
             form = CarrierLoginForm(request.POST)
             if form.is_valid():
                 try:
-                    carrier = Carrier.objects.get(company_name=form.cleaned_data['company_name'], vehicle_type=form.cleaned_data['vehicle_type'], phone_number=form.cleaned_data['phone_number'])
+                    carrier = Carrier.objects.get(email=form.cleaned_data['email'])
                     if check_password(form.cleaned_data['password'], carrier.password):
                         request.session['carrier_id'] = carrier.id
-                        request.session['carrier_name'] = carrier.company_name
+                        request.session['carrier_name'] = carrier.get_full_name()
                         return JsonResponse({'success': True, 'redirect': '/'})
                     else:
                         return JsonResponse({'success': False, 'error': 'Invalid credentials'})

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Company, Carrier
 from django.contrib.auth.hashers import make_password
+from phonenumber_field.formfields import PhoneNumberField
 
 class UserTypeForm(forms.Form):
     USER_TYPE_CHOICES = [
@@ -18,7 +19,7 @@ class CompanyRegistrationForm(forms.ModelForm):
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
         model = Company
-        fields = ['company_name', 'description', 'address', 'phone_number']
+        fields = ['company_name', 'phone_number', 'email']
     def clean(self):
         cleaned_data = super().clean()
         p1 = cleaned_data.get('password1')
@@ -38,7 +39,7 @@ class CarrierRegistrationForm(forms.ModelForm):
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
         model = Carrier
-        fields = ['company_name', 'vehicle_type', 'vehicle_capacity', 'address', 'phone_number']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'vehicle_model']
     def clean(self):
         cleaned_data = super().clean()
         p1 = cleaned_data.get('password1')
@@ -55,11 +56,8 @@ class CarrierRegistrationForm(forms.ModelForm):
 
 class CompanyLoginForm(forms.Form):
     company_name = forms.CharField(max_length=100)
-    phone_number = forms.CharField(max_length=15)
     password = forms.CharField(widget=forms.PasswordInput)
 
 class CarrierLoginForm(forms.Form):
-    company_name = forms.CharField(max_length=100)
-    vehicle_type = forms.CharField(max_length=50)
-    phone_number = forms.CharField(max_length=15)
+    email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput) 

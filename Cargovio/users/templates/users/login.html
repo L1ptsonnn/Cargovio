@@ -1,50 +1,50 @@
 {% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Login - Cargovio{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Login</h2>
-    <form id="loginForm" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" class="form-control" required>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Login</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ user_type_form|crispy }}
+                        <div id="company-form" style="display: none;">
+                            {{ company_form|crispy }}
+                        </div>
+                        <div id="carrier-form" style="display: none;">
+                            {{ carrier_form|crispy }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="user_type">User Type:</label>
-            <select name="user_type" id="user_type" class="form-control" required>
-                <option value="company">Company</option>
-                <option value="carrier">Carrier</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    </div>
 </div>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        fetch('{% url "users:login" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.redirect;
-            } else {
-                alert(data.error);
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const userTypeInputs = document.querySelectorAll('input[name="user_type"]');
+        const companyForm = document.getElementById('company-form');
+        const carrierForm = document.getElementById('carrier-form');
+
+        userTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.value === 'company') {
+                    companyForm.style.display = 'block';
+                    carrierForm.style.display = 'none';
+                } else if (this.value === 'carrier') {
+                    companyForm.style.display = 'none';
+                    carrierForm.style.display = 'block';
+                }
+            });
         });
     });
 </script>

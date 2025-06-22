@@ -1,41 +1,106 @@
 {% extends 'core/base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}Register - Cargovio{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Register</h2>
-    <form id="registerForm" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="password1">Password:</label>
-            <input type="password" name="password1" id="password1" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="password2">Confirm Password:</label>
-            <input type="password" name="password2" id="password2" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="user_type">User Type:</label>
-            <select name="user_type" id="user_type" class="form-control" required>
-                <option value="company">Company</option>
-                <option value="carrier">Carrier</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4" style="width: 100%; max-width: 500px;">
+        <h2 class="text-center mb-4">Реєстрація</h2>
+        <form id="registerForm" method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label for="id_user_type" class="form-label">Ви хто?</label>
+                <div class="btn-group d-flex" role="group">
+                    <input type="radio" class="btn-check" name="user_type" id="company" value="company" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary w-100" for="company">Я компанія</label>
+                    <input type="radio" class="btn-check" name="user_type" id="carrier" value="carrier" autocomplete="off">
+                    <label class="btn btn-outline-primary w-100" for="carrier">Я перевізник</label>
+                </div>
+            </div>
+
+            <div id="company-fields">
+                <div class="form-group mb-3">
+                    <label for="id_company_name" class="form-label">Назва компанії</label>
+                    {% render_field company_form.company_name class="form-control" placeholder="Введіть назву вашої компанії" %}
+                </div>
+                 <div class="form-group mb-3">
+                    <label for="id_email_company" class="form-label">Email</label>
+                    {% render_field company_form.email class="form-control" id="id_email_company" placeholder="pmark2828@gmail.com" %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_phone_number_company" class="form-label">Номер телефону</label>
+                    {% render_field company_form.phone_number class="form-control" id="id_phone_number_company" %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_password1_company" class="form-label">Пароль</label>
+                    {% render_field company_form.password1 class="form-control" id="id_password1_company" placeholder="Мінімум 8 символів, латиниця, цифри" %}
+                </div>
+                <div class="form-group mb-4">
+                    <label for="id_password2_company" class="form-label">Підтвердіть пароль</label>
+                    {% render_field company_form.password2 class="form-control" id="id_password2_company" placeholder="Введіть пароль ще раз для підтвердження" %}
+                </div>
+            </div>
+
+            <div id="carrier-fields" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_first_name" class="form-label">Ім'я</label>
+                        {% render_field carrier_form.first_name class="form-control" placeholder="Andriy" %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_last_name" class="form-label">Прізвище</label>
+                        {% render_field carrier_form.last_name class="form-control" placeholder="Sherchenko" %}
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_vehicle_model" class="form-label">Марка вантажівки</label>
+                    {% render_field carrier_form.vehicle_model class="form-control" placeholder="Наприклад: MAN, Volvo" %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_email_carrier" class="form-label">Email</label>
+                    {% render_field carrier_form.email class="form-control" id="id_email_carrier" placeholder="pmark2828@gmail.com" %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_phone_number_carrier" class="form-label">Номер телефону</label>
+                    {% render_field carrier_form.phone_number class="form-control" id="id_phone_number_carrier" %}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_password1_carrier" class="form-label">Пароль</label>
+                    {% render_field carrier_form.password1 class="form-control" id="id_password1_carrier" placeholder="Мінімум 8 символів, латиниця, цифри" %}
+                </div>
+                <div class="form-group mb-4">
+                    <label for="id_password2_carrier" class="form-label">Підтвердіть пароль</label>
+                    {% render_field carrier_form.password2 class="form-control" id="id_password2_carrier" placeholder="Введіть пароль ще раз для підтвердження" %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+    </div>
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const companyRadio = document.getElementById('company');
+    const carrierRadio = document.getElementById('carrier');
+    const companyFields = document.getElementById('company-fields');
+    const carrierFields = document.getElementById('carrier-fields');
+
+    function toggleFields() {
+        if (carrierRadio.checked) {
+            companyFields.style.display = 'none';
+            carrierFields.style.display = 'block';
+        } else {
+            companyFields.style.display = 'block';
+            carrierFields.style.display = 'none';
+        }
+    }
+
+    companyRadio.addEventListener('change', toggleFields);
+    carrierRadio.addEventListener('change', toggleFields);
+    toggleFields(); // Initial check
+
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -51,9 +116,28 @@
             if (data.success) {
                 window.location.href = data.redirect;
             } else {
-                alert(data.error);
+                // The error is a JSON string, so we parse it to get the object.
+                const errors = JSON.parse(data.error);
+                let errorMessages = 'Будь ласка, виправте наступні помилки:\n';
+                for (const field in errors) {
+                    // Prettify field names
+                    let prettyField = field.replace(/_/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
+                    if (prettyField === 'Password1' || prettyField === 'Password2') {
+                        prettyField = 'Пароль';
+                    }
+                    errors[field].forEach(error => {
+                        // The default Django message is 'This field is required.'. Let's make it better.
+                        if (error.code === 'required') {
+                            errorMessages += `- Поле "${prettyField}" є обов'язковим.\n`;
+                        } else {
+                            errorMessages += `- ${prettyField}: ${error.message}\n`;
+                        }
+                    });
+                }
+                alert(errorMessages);
             }
         });
     });
+});
 </script>
 {% endblock %} 

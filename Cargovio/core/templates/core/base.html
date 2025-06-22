@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Cargovio{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
     {% block extra_head %}{% endblock %}
     <style>
     .cargovio-logo-navbar {
@@ -20,6 +22,58 @@
         height: 56px;
         padding-top: 0;
         padding-bottom: 0;
+    }
+    .modal-content.cargovio-modal {
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 #22222233;
+        padding: 0 8px 8px 8px;
+    }
+    .cargovio-modal-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    .cargovio-modal-label {
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+    .cargovio-modal .form-group {
+        margin-bottom: 1.1rem;
+    }
+    .cargovio-modal .form-control {
+        border-radius: 8px;
+        font-size: 1.08rem;
+        padding-left: 2.2rem;
+    }
+    .cargovio-modal .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #b0b8c9;
+        font-size: 1.1rem;
+    }
+    .cargovio-modal .form-group {
+        position: relative;
+    }
+    .cargovio-modal .btn-primary {
+        border-radius: 8px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        padding: 0.7rem 0;
+        transition: background 0.2s;
+    }
+    .cargovio-modal .btn-primary:hover {
+        background: #2563eb;
+    }
+    @media (max-width: 600px) {
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        .modal-content.cargovio-modal {
+            padding: 0 2px 2px 2px;
+        }
     }
     </style>
 </head>
@@ -105,6 +159,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
     {% block extra_js %}{% endblock %}
 
     <!-- Login Modal -->
@@ -120,43 +175,53 @@
                         <button class="btn btn-outline-dark w-100 mb-2" onclick="showLoginForm('company')">Компанія</button>
                         <button class="btn btn-outline-dark w-100" onclick="showLoginForm('carrier')">Перевізник</button>
                     </div>
-                    <form id="loginFormCompany" style="display:none;">
+                    <form id="loginFormCompany" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <h5 class="mb-3">Вхід для компанії</h5>
-                        <div class="form-group mb-2">
-                            <label for="login_company_name">Company Name:</label>
-                            <input type="text" name="company_name" id="login_company_name" class="form-control" required>
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Вхід для компанії</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="login_company_name" class="cargovio-modal-label">Назва компанії</label>
+                                    <span class="input-icon"><i class="bi bi-building"></i></span>
+                                    <input type="text" name="company_name" id="login_company_name" class="form-control" required autocomplete="organization" placeholder="ТОВ Приклад">
+                                    <small class="form-text text-muted">Введіть назву компанії для входу</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="login_company_password" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="login_company_password" class="form-control" required autocomplete="current-password">
+                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            <label for="login_company_phone">Phone Number:</label>
-                            <input type="text" name="phone_number" id="login_company_phone" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="login_company_password">Password:</label>
-                            <input type="password" name="password" id="login_company_password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
-                    <form id="loginFormCarrier" style="display:none;">
+                    <form id="loginFormCarrier" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <h5 class="mb-3">Вхід для перевізника</h5>
-                        <div class="form-group mb-2">
-                            <label for="login_carrier_name">Company Name:</label>
-                            <input type="text" name="company_name" id="login_carrier_name" class="form-control" required>
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Вхід для перевізника</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="login_carrier_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="login_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
+                                    <small class="form-text text-muted">Введіть email перевізника</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="login_carrier_password" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="login_carrier_password" class="form-control" required autocomplete="current-password">
+                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            <label for="login_carrier_vehicle_type">Vehicle Type:</label>
-                            <input type="text" name="vehicle_type" id="login_carrier_vehicle_type" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="login_carrier_phone">Phone Number:</label>
-                            <input type="text" name="phone_number" id="login_carrier_phone" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="login_carrier_password">Password:</label>
-                            <input type="password" name="password" id="login_carrier_password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
                 </div>
             </div>
@@ -176,67 +241,101 @@
                         <button class="btn btn-outline-dark w-100 mb-2" onclick="showRegisterForm('company')">Компанія</button>
                         <button class="btn btn-outline-dark w-100" onclick="showRegisterForm('carrier')">Перевізник</button>
                     </div>
-                    <form id="registerFormCompany" style="display:none;">
+                    <form id="registerFormCompany" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <h5 class="mb-3">Реєстрація компанії</h5>
-                        <div class="form-group mb-2">
-                            <label for="register_company_name">Company Name:</label>
-                            <input type="text" name="company_name" id="register_company_name" class="form-control" required>
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Реєстрація компанії</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="register_company_name" class="cargovio-modal-label">Назва компанії</label>
+                                    <span class="input-icon"><i class="bi bi-building"></i></span>
+                                    <input type="text" name="company_name" id="register_company_name" class="form-control" required autocomplete="organization">
+                                    <small class="form-text text-muted">Введіть офіційну назву компанії</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="register_company_email" class="form-control" required autocomplete="email" placeholder="company@example.com">
+                                    <small class="form-text text-muted">Введіть дійсну електронну адресу компанії</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_phone" class="cargovio-modal-label">Номер телефону</label>
+                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" name="phone_number" id="register_company_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
+                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_password1" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password1" id="register_company_password1" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_company_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password2" id="register_company_password2" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            <label for="register_company_description">Description:</label>
-                            <textarea name="description" id="register_company_description" class="form-control"></textarea>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_company_address">Address:</label>
-                            <textarea name="address" id="register_company_address" class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_company_phone">Phone Number:</label>
-                            <input type="text" name="phone_number" id="register_company_phone" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_company_password1">Password:</label>
-                            <input type="password" name="password1" id="register_company_password1" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_company_password2">Confirm Password:</label>
-                            <input type="password" name="password2" id="register_company_password2" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
-                    <form id="registerFormCarrier" style="display:none;">
+                    <form id="registerFormCarrier" style="display:none;" autocomplete="on">
                         {% csrf_token %}
-                        <h5 class="mb-3">Реєстрація перевізника</h5>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_name">Carrier Name:</label>
-                            <input type="text" name="company_name" id="register_carrier_name" class="form-control" required>
+                        <div class="modal-content cargovio-modal">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title cargovio-modal-title">Реєстрація перевізника</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body pt-0">
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_first_name" class="cargovio-modal-label">Ім'я</label>
+                                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="first_name" id="register_carrier_first_name" class="form-control" required autocomplete="given-name">
+                                    <small class="form-text text-muted">Введіть ваше ім'я українською або латиницею</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_last_name" class="cargovio-modal-label">Прізвище</label>
+                                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="last_name" id="register_carrier_last_name" class="form-control" required autocomplete="family-name">
+                                    <small class="form-text text-muted">Введіть ваше прізвище українською або латиницею</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_email" class="cargovio-modal-label">Email</label>
+                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="register_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
+                                    <small class="form-text text-muted">Введіть дійсну електронну адресу</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_phone" class="cargovio-modal-label">Номер телефону</label>
+                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" name="phone_number" id="register_carrier_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
+                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_vehicle_model" class="cargovio-modal-label">Марка вантажівки</label>
+                                    <span class="input-icon"><i class="bi bi-truck"></i></span>
+                                    <input type="text" name="vehicle_model" id="register_carrier_vehicle_model" class="form-control" required>
+                                    <small class="form-text text-muted">Наприклад: MAN, Volvo, Mercedes-Benz</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_password1" class="cargovio-modal-label">Пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password1" id="register_carrier_password1" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="register_carrier_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
+                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password2" id="register_carrier_password2" class="form-control" required autocomplete="new-password">
+                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_vehicle_type">Vehicle Type:</label>
-                            <input type="text" name="vehicle_type" id="register_carrier_vehicle_type" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_vehicle_capacity">Vehicle Capacity:</label>
-                            <input type="number" name="vehicle_capacity" id="register_carrier_vehicle_capacity" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_address">Address:</label>
-                            <textarea name="address" id="register_carrier_address" class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_phone">Phone Number:</label>
-                            <input type="text" name="phone_number" id="register_carrier_phone" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_password1">Password:</label>
-                            <input type="password" name="password1" id="register_carrier_password1" class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="register_carrier_password2">Confirm Password:</label>
-                            <input type="password" name="password2" id="register_carrier_password2" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
                 </div>
             </div>
@@ -349,6 +448,28 @@
                     alert(data.error);
                 }
             });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var phoneInputCarrier = document.getElementById('register_carrier_phone');
+            if (phoneInputCarrier) {
+                window.itiCarrier = window.intlTelInput(phoneInputCarrier, {
+                    initialCountry: 'ua',
+                    preferredCountries: ['ua', 'pl', 'de', 'cz', 'ro', 'hu', 'sk', 'lt', 'lv', 'ee'],
+                    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js',
+                    nationalMode: false,
+                    separateDialCode: true
+                });
+            }
+            var phoneInputCompany = document.getElementById('register_company_phone');
+            if (phoneInputCompany) {
+                window.itiCompany = window.intlTelInput(phoneInputCompany, {
+                    initialCountry: 'ua',
+                    preferredCountries: ['ua', 'pl', 'de', 'cz', 'ro', 'hu', 'sk', 'lt', 'lv', 'ee'],
+                    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js',
+                    nationalMode: false,
+                    separateDialCode: true
+                });
+            }
         });
     </script>
 </body>
