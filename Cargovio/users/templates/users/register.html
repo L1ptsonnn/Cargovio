@@ -1,89 +1,93 @@
-{% extends 'core/base.html' %}
-{% load widget_tweaks %}
+{% extends "core/base.html" %}
 
-{% block title %}Register - Cargovio{% endblock %}
+{% block title %}Реєстрація - Cargovio{% endblock %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card p-4" style="width: 100%; max-width: 500px;">
-        <h2 class="text-center mb-4">Реєстрація</h2>
-        <form id="registerForm" method="post" novalidate>
-            {% csrf_token %}
-            <div class="form-group mb-3">
-                <label for="id_user_type" class="form-label">Ви хто?</label>
-                <div class="btn-group d-flex" role="group">
-                    <input type="radio" class="btn-check" name="user_type" id="company" value="company" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary w-100" for="company">Я компанія</label>
-                    <input type="radio" class="btn-check" name="user_type" id="carrier" value="carrier" autocomplete="off">
-                    <label class="btn btn-outline-primary w-100" for="carrier">Я перевізник</label>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow-lg border-0 rounded-lg mt-5 mb-5">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="fw-light my-4">Створення облікового запису</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if company_form.errors or carrier_form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <p class="mb-0 fw-bold">Будь ласка, виправте помилки, відмічені нижче:</p>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-4 text-center">
+                            <label class="form-label fw-bold">Виберіть тип вашого облікового запису:</label>
+                            <div class="btn-group w-100" role="group" aria-label="Тип користувача">
+                                <input type="radio" class="btn-check" name="user_type" id="id_user_type_company" value="company" {% if not carrier_form.is_bound %}checked{% endif %}>
+                                <label class="btn btn-outline-primary" for="id_user_type_company">Я компанія</label>
+
+                                <input type="radio" class="btn-check" name="user_type" id="id_user_type_carrier" value="carrier" {% if carrier_form.is_bound %}checked{% endif %}>
+                                <label class="btn btn-outline-primary" for="id_user_type_carrier">Я перевізник</label>
+                            </div>
+                        </div>
+
+                        <div id="company-fields">
+                            {% for field in company_form %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                    <input type="{{ field.field.widget.input_type }}" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}" 
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div id="carrier-fields" style="display: none;">
+                            {% for field in carrier_form %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                     <input type="{{ field.field.widget.input_type }}" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}" 
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mt-4 mb-0">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Зареєструватися</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    <div class="small"><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Вже маєте акаунт? Увійти</a></div>
                 </div>
             </div>
-
-            <div id="company-fields">
-                <div class="form-group mb-3">
-                    <label for="id_company_name" class="form-label">Назва компанії</label>
-                    {% render_field company_form.company_name class="form-control" placeholder="Введіть назву вашої компанії" %}
-                </div>
-                 <div class="form-group mb-3">
-                    <label for="id_email_company" class="form-label">Email</label>
-                    {% render_field company_form.email class="form-control" id="id_email_company" placeholder="pmark2828@gmail.com" %}
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_phone_number_company" class="form-label">Номер телефону</label>
-                    {% render_field company_form.phone_number class="form-control" id="id_phone_number_company" %}
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_password1_company" class="form-label">Пароль</label>
-                    {% render_field company_form.password1 class="form-control" id="id_password1_company" placeholder="Мінімум 8 символів, латиниця, цифри" %}
-                </div>
-                <div class="form-group mb-4">
-                    <label for="id_password2_company" class="form-label">Підтвердіть пароль</label>
-                    {% render_field company_form.password2 class="form-control" id="id_password2_company" placeholder="Введіть пароль ще раз для підтвердження" %}
-                </div>
-            </div>
-
-            <div id="carrier-fields" style="display: none;">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="id_first_name" class="form-label">Ім'я</label>
-                        {% render_field carrier_form.first_name class="form-control" placeholder="Andriy" %}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="id_last_name" class="form-label">Прізвище</label>
-                        {% render_field carrier_form.last_name class="form-control" placeholder="Sherchenko" %}
-                    </div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_vehicle_model" class="form-label">Марка вантажівки</label>
-                    {% render_field carrier_form.vehicle_model class="form-control" placeholder="Наприклад: MAN, Volvo" %}
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_email_carrier" class="form-label">Email</label>
-                    {% render_field carrier_form.email class="form-control" id="id_email_carrier" placeholder="pmark2828@gmail.com" %}
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_phone_number_carrier" class="form-label">Номер телефону</label>
-                    {% render_field carrier_form.phone_number class="form-control" id="id_phone_number_carrier" %}
-                </div>
-                <div class="form-group mb-3">
-                    <label for="id_password1_carrier" class="form-label">Пароль</label>
-                    {% render_field carrier_form.password1 class="form-control" id="id_password1_carrier" placeholder="Мінімум 8 символів, латиниця, цифри" %}
-                </div>
-                <div class="form-group mb-4">
-                    <label for="id_password2_carrier" class="form-label">Підтвердіть пароль</label>
-                    {% render_field carrier_form.password2 class="form-control" id="id_password2_carrier" placeholder="Введіть пароль ще раз для підтвердження" %}
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-        </form>
+        </div>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const companyRadio = document.getElementById('company');
-    const carrierRadio = document.getElementById('carrier');
+    const companyRadio = document.getElementById('id_user_type_company');
+    const carrierRadio = document.getElementById('id_user_type_carrier');
     const companyFields = document.getElementById('company-fields');
     const carrierFields = document.getElementById('carrier-fields');
 
@@ -91,53 +95,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (carrierRadio.checked) {
             companyFields.style.display = 'none';
             carrierFields.style.display = 'block';
+            // Disable company fields to prevent them from being submitted
+            companyFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+            carrierFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false);
         } else {
             companyFields.style.display = 'block';
             carrierFields.style.display = 'none';
+            // Disable carrier fields
+            companyFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false);
+            carrierFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
         }
     }
 
     companyRadio.addEventListener('change', toggleFields);
     carrierRadio.addEventListener('change', toggleFields);
-    toggleFields(); // Initial check
-
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        fetch('{% url "users:register" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.redirect;
-            } else {
-                // The error is a JSON string, so we parse it to get the object.
-                const errors = JSON.parse(data.error);
-                let errorMessages = 'Будь ласка, виправте наступні помилки:\n';
-                for (const field in errors) {
-                    // Prettify field names
-                    let prettyField = field.replace(/_/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
-                    if (prettyField === 'Password1' || prettyField === 'Password2') {
-                        prettyField = 'Пароль';
-                    }
-                    errors[field].forEach(error => {
-                        // The default Django message is 'This field is required.'. Let's make it better.
-                        if (error.code === 'required') {
-                            errorMessages += `- Поле "${prettyField}" є обов'язковим.\n`;
-                        } else {
-                            errorMessages += `- ${prettyField}: ${error.message}\n`;
-                        }
-                    });
-                }
-                alert(errorMessages);
-            }
-        });
-    });
+    
+    // Initial check to set the correct form fields on page load
+    toggleFields();
 });
 </script>
 {% endblock %} 

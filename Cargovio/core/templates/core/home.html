@@ -1,57 +1,60 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Cargovio — Логістика Європи{% endblock %}
+{% block title %}Cargovio — Логістика по всій Європі{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'core/home.css' %}">
     <style>
-        .map-container {
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-            border: 2.5px solid #222;
-            overflow: hidden;
-            position: relative;
+        .hero-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
-        #amcharts-europe-map {
+        .map-container {
             width: 100%;
-            height: 70vh;
+            height: 60vh; /* Зменшимо висоту для кращого балансу */
+            min-height: 400px;
+            border-radius: 18px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+            border: 2px solid #fff;
             background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .display-4 {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .lead {
+            color: #34495e;
+        }
+        .btn-lg {
+            padding: 0.8rem 2rem;
+            font-weight: 600;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-<div class="position-relative" style="z-index:1;">
-    <!-- Декоративна лінія (видима тільки на великих екранах) -->
-    <svg width="80" height="600" viewBox="0 0 80 600" fill="none" xmlns="http://www.w3.org/2000/svg" class="d-none d-lg-block" style="position:absolute;left:-60px;top:60px;">
-        <polyline points="40,0 40,100 20,200 60,300 40,400 40,600" stroke="#b0b8c9" stroke-width="4" fill="none" stroke-dasharray="12 12"/>
-        <circle cx="40" cy="0" r="8" fill="#b0b8c9"/>
-        <circle cx="40" cy="100" r="6" fill="#b0b8c9"/>
-        <circle cx="20" cy="200" r="6" fill="#b0b8c9"/>
-        <circle cx="60" cy="300" r="6" fill="#b0b8c9"/>
-        <circle cx="40" cy="400" r="6" fill="#b0b8c9"/>
-        <circle cx="40" cy="600" r="8" fill="#b0b8c9"/>
-    </svg>
-
-    <div class="map-container shadow-lg">
-        <!-- Мініатюрна іконка-вантажівка -->
-        <div class="position-absolute bottom-0 start-0 p-2" style="opacity:0.18;z-index:2;">
-            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="14" width="22" height="10" rx="2" fill="#222"/>
-                <rect x="26" y="17" width="7" height="7" rx="1.5" fill="#222"/>
-                <circle cx="10" cy="27" r="3" fill="#222"/>
-                <circle cx="26" cy="27" r="3" fill="#222"/>
-                <rect x="7" y="17" width="6" height="4" rx="1" fill="#fff"/>
-            </svg>
+<div class="container hero-section">
+    <div class="row align-items-center">
+        <div class="col-lg-5 mb-4 mb-lg-0 text-center text-lg-start">
+            <h1 class="display-4">Ваша логістика.<br>Просто та надійно.</h1>
+            <p class="lead my-4">
+                Cargovio об'єднує компанії та перевізників на одній платформі,
+                роблячи процес вантажоперевезень прозорим та ефективним.
+            </p>
+            {% if not user.is_authenticated %}
+                <a href="#" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#registerModal">Почати роботу</a>
+                <a href="#" class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">Увійти</a>
+            {% else %}
+                <a href="{% url 'users:profile' %}" class="btn btn-primary btn-lg">Перейти до профілю</a>
+            {% endif %}
         </div>
-        
-        <div id="amcharts-europe-map"></div>
-        
-        <!-- Темна хвиля під картою -->
-        <svg width="100%" height="60" viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute bottom-0 start-0" style="z-index:1;">
-            <path d="M0 20 Q 300 60 600 20 T 1200 20 V60 H0Z" fill="#222" fill-opacity="0.12"/>
-        </svg>
+        <div class="col-lg-7">
+            <div class="map-container">
+                 <div id="amcharts-europe-map" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -62,5 +65,31 @@
     <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/geodata/region/world/europeLow.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-    <script src="{% static 'core/home.js' %}"></script>
+    <script>
+        am5.ready(function() {
+            var root = am5.Root.new("amcharts-europe-map");
+            root.setThemes([am5themes_Animated.new(root)]);
+            var chart = root.container.children.push(am5map.MapChart.new(root, {
+                panX: "rotateX",
+                panY: "none",
+                projection: am5map.geoMercator(),
+                homeZoomLevel: 3.5,
+                homeGeoPoint: { latitude: 50, longitude: 15 }
+            }));
+            var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+                geoJSON: am5geodata_europeLow
+            }));
+             polygonSeries.mapPolygons.template.setAll({
+                tooltipText: "{name}",
+                toggleKey: "active",
+                interactive: true,
+                fill: am5.color(0xCCCCCC),
+                stroke: am5.color(0xFFFFFF),
+                strokeWidth: 0.5
+            });
+            polygonSeries.mapPolygons.template.states.create("hover", {
+                fill: am5.color(0x999999)
+            });
+        });
+    </script>
 {% endblock %} 

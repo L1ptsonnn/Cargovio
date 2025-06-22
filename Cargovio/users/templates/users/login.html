@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - Cargovio{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Login</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ user_type_form|crispy }}
+                        <div id="company-form" style="display: none;">
+                            {{ company_form|crispy }}
+                        </div>
+                        <div id="carrier-form" style="display: none;">
+                            {{ carrier_form|crispy }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userTypeInputs = document.querySelectorAll('input[name="user_type"]');
+        const companyForm = document.getElementById('company-form');
+        const carrierForm = document.getElementById('carrier-form');
+
+        userTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.value === 'company') {
+                    companyForm.style.display = 'block';
+                    carrierForm.style.display = 'none';
+                } else if (this.value === 'carrier') {
+                    companyForm.style.display = 'none';
+                    carrierForm.style.display = 'block';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 
