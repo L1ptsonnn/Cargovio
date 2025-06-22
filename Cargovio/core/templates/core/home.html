@@ -6,20 +6,25 @@
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'core/home.css' %}">
     <style>
-        #amcharts-europe-map { width: 100vw; max-width: 1600px; height: 70vh; margin: 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+        .map-container {
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            border: 2.5px solid #222;
+            overflow: hidden;
+            position: relative;
+        }
+        #amcharts-europe-map {
+            width: 100%;
+            height: 70vh;
+            background: #fff;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-<!-- SVG-хвиля у верхній частині -->
-<div style="position:absolute;top:0;left:0;width:100vw;z-index:0;pointer-events:none;">
-    <svg width="100%" height="120" viewBox="0 0 1920 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 80 Q 480 0 960 80 T 1920 80 V120 H0Z" fill="#e3eafc" fill-opacity="0.5"/>
-    </svg>
-</div>
-<div class="europe-map-decor-wrap position-relative" style="z-index:1;">
-    <!-- Декоративна логістична лінія з точками -->
-    <svg width="80" height="600" viewBox="0 0 80 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:-60px;top:60px;">
+<div class="position-relative" style="z-index:1;">
+    <!-- Декоративна лінія (видима тільки на великих екранах) -->
+    <svg width="80" height="600" viewBox="0 0 80 600" fill="none" xmlns="http://www.w3.org/2000/svg" class="d-none d-lg-block" style="position:absolute;left:-60px;top:60px;">
         <polyline points="40,0 40,100 20,200 60,300 40,400 40,600" stroke="#b0b8c9" stroke-width="4" fill="none" stroke-dasharray="12 12"/>
         <circle cx="40" cy="0" r="8" fill="#b0b8c9"/>
         <circle cx="40" cy="100" r="6" fill="#b0b8c9"/>
@@ -28,32 +33,27 @@
         <circle cx="40" cy="400" r="6" fill="#b0b8c9"/>
         <circle cx="40" cy="600" r="8" fill="#b0b8c9"/>
     </svg>
-    <div class="europe-map-container shadow-lg position-relative" style="position:relative;box-shadow:0 8px 40px 0 #b0b8c933, 0 1.5px 0 #fff;border:2.5px solid #222;overflow:hidden;">
-        <!-- Мініатюрна іконка-вантажівка в лівому нижньому кутку -->
-        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:10px;bottom:10px;opacity:0.18;z-index:2;">
-            <rect x="4" y="14" width="22" height="10" rx="2" fill="#222"/>
-            <rect x="26" y="17" width="7" height="7" rx="1.5" fill="#222"/>
-            <circle cx="10" cy="27" r="3" fill="#222"/>
-            <circle cx="26" cy="27" r="3" fill="#222"/>
-            <rect x="7" y="17" width="6" height="4" rx="1" fill="#fff"/>
-        </svg>
+
+    <div class="map-container shadow-lg">
+        <!-- Мініатюрна іконка-вантажівка -->
+        <div class="position-absolute bottom-0 start-0 p-2" style="opacity:0.18;z-index:2;">
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="14" width="22" height="10" rx="2" fill="#222"/>
+                <rect x="26" y="17" width="7" height="7" rx="1.5" fill="#222"/>
+                <circle cx="10" cy="27" r="3" fill="#222"/>
+                <circle cx="26" cy="27" r="3" fill="#222"/>
+                <rect x="7" y="17" width="6" height="4" rx="1" fill="#fff"/>
+            </svg>
+        </div>
+        
         <div id="amcharts-europe-map"></div>
+        
         <!-- Темна хвиля під картою -->
-        <svg width="100%" height="60" viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:0;bottom:0;z-index:1;">
+        <svg width="100%" height="60" viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute bottom-0 start-0" style="z-index:1;">
             <path d="M0 20 Q 300 60 600 20 T 1200 20 V60 H0Z" fill="#222" fill-opacity="0.12"/>
         </svg>
     </div>
 </div>
-<!-- Декоративна чорна смуга внизу сторінки -->
-<div style="width:100vw;height:38px;background:#222;position:fixed;left:0;bottom:0;z-index:100;"></div>
-<!-- Ліва хвиля-декор -->
-<svg width="120" height="900" viewBox="0 0 120 900" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:fixed;left:0;top:120px;z-index:0;pointer-events:none;">
-    <path d="M60 0 Q 10 200 60 400 Q 110 600 60 800 Q 10 900 60 900" stroke="#222" stroke-width="32" fill="none" opacity="0.08"/>
-</svg>
-<!-- Права хвиля-декор -->
-<svg width="120" height="900" viewBox="0 0 120 900" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:fixed;right:0;top:120px;z-index:0;pointer-events:none;">
-    <path d="M60 0 Q 110 200 60 400 Q 10 600 60 800 Q 110 900 60 900" stroke="#222" stroke-width="32" fill="none" opacity="0.08"/>
-</svg>
 {% endblock %}
 
 {% block extra_js %}

@@ -1,22 +1,136 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if company %}
+        Профіль компанії {{ company.company_name }}
+    {% elif carrier %}
+        Профіль перевізника {{ carrier.name }}
+    {% endif %}
+- Cargovio
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Profile</h2>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ user.username }}</h5>
-            <p class="card-text">Email: {{ user.email }}</p>
-            {% if user.company %}
-                <p class="card-text">Company: {{ user.company.company_name }}</p>
-                <p class="card-text">Description: {{ user.company.description }}</p>
-            {% endif %}
-            {% if user.carrier %}
-                <p class="card-text">Vehicle Type: {{ user.carrier.vehicle_type }}</p>
-                <p class="card-text">Vehicle Capacity: {{ user.carrier.vehicle_capacity }}</p>
-            {% endif %}
-            <p class="card-text">Phone: {{ user.phone_number }}</p>
-            <p class="card-text">Address: {{ user.address }}</p>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if company %}
+                        <img src="{% static 'core/company_avatar.png' %}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">{{ company.company_name }}</h5>
+                        <p class="text-muted mb-1">Компанія</p>
+                        <p class="text-muted mb-4">{{ company.address }}</p>
+                    {% elif carrier %}
+                        <img src="{% static 'core/carrier_avatar.png' %}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">{{ carrier.name }}</h5>
+                        <p class="text-muted mb-1">Перевізник</p>
+                         <p class="text-muted mb-4">{{ carrier.phone_number }}</p>
+                    {% endif %}
+                    <div class="d-flex justify-content-center mb-2">
+                        <button type="button" class="btn btn-primary">Редагувати</button>
+                        <button type="button" class="btn btn-outline-primary ms-1">Повідомлення</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush rounded-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <i class="fas fa-globe fa-lg text-warning"></i>
+                            <p class="mb-0">https://cargovio-app.com</p>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <i class="fab fa-github fa-lg" style="color: #333333;"></i>
+                            <p class="mb-0">cargovio_user</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    {% if company %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0"><i class="bi bi-building me-2"></i>Назва</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ company.company_name }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Адреса</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ company.address }}</p>
+                        </div>
+                    </div>
+                    {% elif carrier %}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0"><i class="bi bi-person-fill me-2"></i>Повне ім'я</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ carrier.name }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0"><i class="bi bi-envelope-fill me-2"></i>Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ carrier.email }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0"><i class="bi bi-telephone-fill me-2"></i>Телефон</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ carrier.phone_number }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4 mb-md-0">
+                        <div class="card-body">
+                            <p class="mb-4"><span class="text-primary font-italic me-1">Активні</span> Замовлення</p>
+                            <p class="mb-1" style="font-size: .77rem;">Перевезення Київ-Варшава</p>
+                            <div class="progress rounded" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="mt-4 mb-1" style="font-size: .77rem;">Вантаж Львів-Берлін</p>
+                            <div class="progress rounded" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4 mb-md-0">
+                        <div class="card-body">
+                            <p class="mb-4"><span class="text-primary font-italic me-1">Статистика</span> Рейтинг</p>
+                            <p class="mb-1" style="font-size: .77rem;">Виконано замовлень</p>
+                            <div class="progress rounded" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="mt-4 mb-1" style="font-size: .77rem;">Рейтинг клієнтів</p>
+                            <div class="progress rounded" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

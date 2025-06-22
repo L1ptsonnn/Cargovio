@@ -94,58 +94,66 @@
     </svg>
     <!-- Декоративна чорна смуга внизу сторінки -->
     <div style="width:100vw;height:38px;background:#222;position:fixed;left:0;bottom:0;z-index:100;"></div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" style="min-height:110px;">
-        <div class="d-flex align-items-center w-100" style="min-height: 110px;">
-            <a class="navbar-brand d-flex align-items-center justify-content-center ms-4" href="{% url 'core:home' %}" style="width: 180px; min-width: 180px;">
-                <img src="{% static 'core/logo.png' %}" alt="Cargovio Logo" style="width: 180px; height: 90px; object-fit:contain;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+                <img src="{% static 'core/logo.png' %}" alt="Cargovio Logo" style="width: 150px; height: 75px; object-fit:contain;">
             </a>
-            <div class="flex-grow-1">
-                <div class="container">
-                    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarNav" style="height:90px;">
-                        <ul class="navbar-nav ms-auto align-items-center gap-2 h-100">
-                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Головна</a></li>
-                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Послуги</a></li>
-                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Про нас</a></li>
-                            <li class="nav-item d-flex align-items-center h-100"><a class="nav-link" href="#">Контакти</a></li>
-                            {% if request.session.company_id %}
-                                <li class="nav-item d-flex align-items-center h-100">
-                                    <span class="nav-link">Компанія: {{ request.session.company_name }}</span>
-                                </li>
-                                <li class="nav-item d-flex align-items-center h-100">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#">Головна</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Послуги</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Про нас</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Контакти</a></li>
+                    {% if request.session.company_id %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCompany" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-building"></i> {{ request.session.company_name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownCompany">
+                                <li><a class="dropdown-item" href="#">Профіль</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
                                     <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-light btn-sm">Вихід</button>
+                                        <button type="submit" class="dropdown-item">Вихід</button>
                                     </form>
                                 </li>
-                            {% elif request.session.carrier_id %}
-                                <li class="nav-item d-flex align-items-center h-100">
-                                    <span class="nav-link">Перевізник: {{ request.session.carrier_name }}</span>
-                                </li>
-                                <li class="nav-item d-flex align-items-center h-100">
+                            </ul>
+                        </li>
+                    {% elif request.session.carrier_id %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCarrier" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-truck"></i> {{ request.session.carrier_name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownCarrier">
+                                <li><a class="dropdown-item" href="#">Профіль</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
                                     <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-light btn-sm">Вихід</button>
+                                        <button type="submit" class="dropdown-item">Вихід</button>
                                     </form>
                                 </li>
-                            {% else %}
-                                <li class="nav-item d-flex align-items-center h-100">
-                                    <a class="btn btn-outline-light btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Вхід</a>
-                                </li>
-                                <li class="nav-item d-flex align-items-center h-100">
-                                    <a class="btn btn-primary btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Реєстрація</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-outline-light btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Вхід</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <a class="btn btn-primary btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Реєстрація</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <div class="container my-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -164,65 +172,63 @@
 
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content cargovio-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title cargovio-modal-title" id="loginModalLabel">Вхід</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="loginTypeChoice">
-                        <button class="btn btn-outline-dark w-100 mb-2" onclick="showLoginForm('company')">Компанія</button>
-                        <button class="btn btn-outline-dark w-100" onclick="showLoginForm('carrier')">Перевізник</button>
-                    </div>
-                    <form id="loginFormCompany" style="display:none;" autocomplete="on">
-                        {% csrf_token %}
-                        <div class="modal-content cargovio-modal">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title cargovio-modal-title">Вхід для компанії</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body pt-0">
-                                <div class="form-group mb-2">
+                    <ul class="nav nav-pills nav-fill mb-3" id="pills-tab-login" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-company-login-tab" data-bs-toggle="pill" data-bs-target="#pills-company-login" type="button" role="tab" aria-controls="pills-company-login" aria-selected="true">Компанія</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-carrier-login-tab" data-bs-toggle="pill" data-bs-target="#pills-carrier-login" type="button" role="tab" aria-controls="pills-carrier-login" aria-selected="false">Перевізник</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent-login">
+                        <div class="tab-pane fade show active" id="pills-company-login" role="tabpanel" aria-labelledby="pills-company-login-tab">
+                            <form id="loginFormCompany" autocomplete="on">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
                                     <label for="login_company_name" class="cargovio-modal-label">Назва компанії</label>
-                                    <span class="input-icon"><i class="bi bi-building"></i></span>
-                                    <input type="text" name="company_name" id="login_company_name" class="form-control" required autocomplete="organization" placeholder="ТОВ Приклад">
-                                    <small class="form-text text-muted">Введіть назву компанії для входу</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                        <input type="text" name="company_name" id="login_company_name" class="form-control" required autocomplete="organization" placeholder="ТОВ Приклад">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
+                                <div class="form-group mb-3">
                                     <label for="login_company_password" class="cargovio-modal-label">Пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password" id="login_company_password" class="form-control" required autocomplete="current-password">
-                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" name="password" id="login_company_password" class="form-control" required autocomplete="current-password">
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
-                            </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">Увійти</button>
+                            </form>
                         </div>
-                    </form>
-                    <form id="loginFormCarrier" style="display:none;" autocomplete="on">
-                        {% csrf_token %}
-                        <div class="modal-content cargovio-modal">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title cargovio-modal-title">Вхід для перевізника</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body pt-0">
-                                <div class="form-group mb-2">
+                        <div class="tab-pane fade" id="pills-carrier-login" role="tabpanel" aria-labelledby="pills-carrier-login-tab">
+                            <form id="loginFormCarrier" autocomplete="on">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
                                     <label for="login_carrier_email" class="cargovio-modal-label">Email</label>
-                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" id="login_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
-                                    <small class="form-text text-muted">Введіть email перевізника</small>
+                                     <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" name="email" id="login_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
+                                <div class="form-group mb-3">
                                     <label for="login_carrier_password" class="cargovio-modal-label">Пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password" id="login_carrier_password" class="form-control" required autocomplete="current-password">
-                                    <small class="form-text text-muted">Введіть ваш пароль</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" name="password" id="login_carrier_password" class="form-control" required autocomplete="current-password">
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
-                            </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">Увійти</button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -230,113 +236,107 @@
 
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content cargovio-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title cargovio-modal-title" id="registerModalLabel">Реєстрація</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="registerTypeChoice">
-                        <button class="btn btn-outline-dark w-100 mb-2" onclick="showRegisterForm('company')">Компанія</button>
-                        <button class="btn btn-outline-dark w-100" onclick="showRegisterForm('carrier')">Перевізник</button>
-                    </div>
-                    <form id="registerFormCompany" style="display:none;" autocomplete="on">
-                        {% csrf_token %}
-                        <div class="modal-content cargovio-modal">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title cargovio-modal-title">Реєстрація компанії</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body pt-0">
-                                <div class="form-group mb-2">
+                    <ul class="nav nav-pills nav-fill mb-3" id="pills-tab-register" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-company-register-tab" data-bs-toggle="pill" data-bs-target="#pills-company-register" type="button" role="tab" aria-controls="pills-company-register" aria-selected="true">Компанія</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-carrier-register-tab" data-bs-toggle="pill" data-bs-target="#pills-carrier-register" type="button" role="tab" aria-controls="pills-carrier-register" aria-selected="false">Перевізник</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent-register">
+                        <div class="tab-pane fade show active" id="pills-company-register" role="tabpanel" aria-labelledby="pills-company-register-tab">
+                             <form id="registerFormCompany" autocomplete="on">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
                                     <label for="register_company_name" class="cargovio-modal-label">Назва компанії</label>
-                                    <span class="input-icon"><i class="bi bi-building"></i></span>
-                                    <input type="text" name="company_name" id="register_company_name" class="form-control" required autocomplete="organization">
-                                    <small class="form-text text-muted">Введіть офіційну назву компанії</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                        <input type="text" name="company_name" id="register_company_name" class="form-control" required autocomplete="organization">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_company_email" class="cargovio-modal-label">Email</label>
-                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" id="register_company_email" class="form-control" required autocomplete="email" placeholder="company@example.com">
-                                    <small class="form-text text-muted">Введіть дійсну електронну адресу компанії</small>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="register_company_password" class="cargovio-modal-label">Пароль</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                <input type="password" name="password" id="register_company_password" class="form-control" required autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="register_company_password2" class="cargovio-modal-label">Повторіть пароль</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                <input type="password" name="password2" id="register_company_password2" class="form-control" required autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_company_phone" class="cargovio-modal-label">Номер телефону</label>
-                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
-                                    <input type="tel" name="phone_number" id="register_company_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
-                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                <div class="form-group mb-3">
+                                    <label for="register_company_address" class="cargovio-modal-label">Адреса</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" name="address" id="register_company_address" class="form-control" required autocomplete="street-address">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_company_password1" class="cargovio-modal-label">Пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password1" id="register_company_password1" class="form-control" required autocomplete="new-password">
-                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_company_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password2" id="register_company_password2" class="form-control" required autocomplete="new-password">
-                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
-                            </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">Зареєструватися</button>
+                            </form>
                         </div>
-                    </form>
-                    <form id="registerFormCarrier" style="display:none;" autocomplete="on">
-                        {% csrf_token %}
-                        <div class="modal-content cargovio-modal">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title cargovio-modal-title">Реєстрація перевізника</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body pt-0">
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_first_name" class="cargovio-modal-label">Ім'я</label>
-                                    <span class="input-icon"><i class="bi bi-person"></i></span>
-                                    <input type="text" name="first_name" id="register_carrier_first_name" class="form-control" required autocomplete="given-name">
-                                    <small class="form-text text-muted">Введіть ваше ім'я українською або латиницею</small>
+                        <div class="tab-pane fade" id="pills-carrier-register" role="tabpanel" aria-labelledby="pills-carrier-register-tab">
+                            <form id="registerFormCarrier" autocomplete="on">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                     <label for="carrier_name" class="cargovio-modal-label">Ім'я</label>
+                                     <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" name="name" id="carrier_name" class="form-control" required autocomplete="name">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_last_name" class="cargovio-modal-label">Прізвище</label>
-                                    <span class="input-icon"><i class="bi bi-person"></i></span>
-                                    <input type="text" name="last_name" id="register_carrier_last_name" class="form-control" required autocomplete="family-name">
-                                    <small class="form-text text-muted">Введіть ваше прізвище українською або латиницею</small>
-                                </div>
-                                <div class="form-group mb-2">
+                                <div class="form-group mb-3">
                                     <label for="register_carrier_email" class="cargovio-modal-label">Email</label>
-                                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" id="register_carrier_email" class="form-control" required autocomplete="email" placeholder="name@example.com">
-                                    <small class="form-text text-muted">Введіть дійсну електронну адресу</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" name="email" id="register_carrier_email" class="form-control" required autocomplete="email">
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_phone" class="cargovio-modal-label">Номер телефону</label>
-                                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
-                                    <input type="tel" name="phone_number" id="register_carrier_phone" class="form-control" required autocomplete="tel" placeholder="+380XXXXXXXXX">
-                                    <small class="form-text text-muted">Виберіть країну та введіть номер телефону у міжнародному форматі</small>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="register_carrier_password" class="cargovio-modal-label">Пароль</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                <input type="password" name="password" id="register_carrier_password" class="form-control" required autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="register_carrier_password2" class="cargovio-modal-label">Повторіть пароль</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                <input type="password" name="password2" id="register_carrier_password2" class="form-control" required autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_vehicle_model" class="cargovio-modal-label">Марка вантажівки</label>
-                                    <span class="input-icon"><i class="bi bi-truck"></i></span>
-                                    <input type="text" name="vehicle_model" id="register_carrier_vehicle_model" class="form-control" required>
-                                    <small class="form-text text-muted">Наприклад: MAN, Volvo, Mercedes-Benz</small>
+                                 <div class="form-group mb-3">
+                                    <label for="phone_number" class="cargovio-modal-label">Номер телефону</label>
+                                    <input type="tel" name="phone_number" id="phone_number" class="form-control" required>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_password1" class="cargovio-modal-label">Пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password1" id="register_carrier_password1" class="form-control" required autocomplete="new-password">
-                                    <small class="form-text text-muted">Мінімум 8 символів, латиниця, цифри</small>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <label for="register_carrier_password2" class="cargovio-modal-label">Підтвердіть пароль</label>
-                                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="password2" id="register_carrier_password2" class="form-control" required autocomplete="new-password">
-                                    <small class="form-text text-muted">Введіть пароль ще раз для підтвердження</small>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
-                            </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">Зареєструватися</button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
